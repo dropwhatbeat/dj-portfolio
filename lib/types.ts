@@ -5,6 +5,9 @@ export type Project = {
   description: string
   tags: string[]
   url?: string
+  displayUrl?: string
+  previewBg?: string
+  emoji?: string
   posthogKey?: string
 }
 

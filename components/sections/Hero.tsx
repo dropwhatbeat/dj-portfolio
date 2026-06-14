@@ -1,102 +1,149 @@
 'use client'
 
-import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
-import { useState } from 'react'
-
-const headline = 'Building things that should have existed already.'
-const words = headline.split(' ')
+import { useEffect, useState } from 'react'
+import { useScroll, useMotionValueEvent } from 'framer-motion'
+import Image from 'next/image'
 
 export default function Hero() {
   const { scrollY } = useScroll()
+  const [mounted, setMounted] = useState(false)
   const [showChevron, setShowChevron] = useState(true)
 
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setMounted(true))
+    })
+  }, [])
+
   useMotionValueEvent(scrollY, 'change', (y) => {
-    setShowChevron(y < 300)
+    setShowChevron(y < 180)
+  })
+
+  const fadeIn = (delay: number) => ({
+    transition: `opacity 0.6s cubic-bezier(0.25,0.46,0.45,0.94) ${delay}ms, transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94) ${delay}ms`,
+    opacity: mounted ? 1 : 0,
+    transform: mounted ? 'translateY(0)' : 'translateY(20px)',
   })
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-center pt-14">
-      <div className="max-w-5xl mx-auto px-10 max-md:px-6 py-24">
-        <motion.p
-          className="text-[11px] font-semibold tracking-[1.6px] uppercase text-ink5 mb-8"
-          initial={{ opacity: 0, x: -16 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-        >
-          Product · Projects · Singapore
-        </motion.p>
+    <section
+      id="hero"
+      className="relative flex items-center"
+      style={{ minHeight: '50vh', padding: '108px 0 64px' }}
+    >
+      <div className="max-w-[1040px] mx-auto px-10 max-[600px]:px-5 w-full">
+        <div className="grid items-center [grid-template-columns:1fr_280px] gap-16 max-[900px]:[grid-template-columns:1fr] max-[900px]:gap-9">
 
-        <h1 className="text-5xl max-md:text-4xl font-semibold tracking-[-1.5px] text-ink mb-6 max-w-3xl leading-[1.1]">
-          {words.map((word, i) => (
-            <motion.span
-              key={i}
-              className="inline-block mr-[0.25em]"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.5,
-                ease: [0.25, 0.1, 0.25, 1],
-                delay: 0.1 + i * 0.04,
+          {/* Left: text */}
+          <div>
+            <p
+              className="text-[11px] font-semibold tracking-[1.6px] uppercase text-ink5 mb-[22px]"
+              style={fadeIn(50)}
+            >
+              TECHNICAL PRODUCT MANAGER{' '}
+              <span className="text-accent">·</span>
+              {' '}SINGAPORE
+            </p>
+
+            <h1
+              className="font-display font-normal text-ink mb-5"
+              style={{
+                ...fadeIn(160),
+                fontSize: 'clamp(2.5rem, 4.6vw, 4.2rem)',
+                lineHeight: 1.07,
+                letterSpacing: '-0.02em',
               }}
             >
-              {word}
-            </motion.span>
-          ))}
-        </h1>
+              These are the ideas
+              <br />
+              that made it out of my mind.
+            </h1>
 
-        <motion.p
-          className="text-[17px] leading-relaxed text-ink3 mb-10 max-w-xl"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1], delay: 0.45 }}
-        >
-          Technical PM by day. I build side projects to scratch my own itches —
-          usually things I wished existed but couldn&apos;t find.
-        </motion.p>
+            <p
+              className="text-[17px] text-ink3 leading-[1.6] mb-9 max-w-[400px]"
+              style={fadeIn(300)}
+            >
+              Some side projects for fun
+            </p>
 
-        <motion.div
-          className="flex items-center gap-3"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1], delay: 0.55 }}
-        >
-          <a
-            href="/cv.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center px-5 py-2.5 text-[14px] font-medium text-ink border border-[0.5px] border-ink rounded-lg hover:bg-subtle transition-colors duration-200"
+            <div className="flex items-center gap-[6px]" style={fadeIn(430)}>
+              <a
+                href="/cv.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-[13px] font-medium text-ink rounded-lg hover:bg-ink hover:text-white hover:border-ink transition-[background-color,color,border-color] duration-[180ms]"
+                style={{ padding: '9px 20px', border: '0.5px solid rgba(29,29,31,0.38)' }}
+              >
+                CV
+              </a>
+              <a
+                href="https://linkedin.com/in/deng-jing"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-[13px] font-medium text-ink3 hover:text-ink transition-colors duration-200"
+                style={{ padding: '9px 12px' }}
+              >
+                LinkedIn ↗
+              </a>
+            </div>
+          </div>
+
+          {/* Right: photo */}
+          <div
+            className="max-[900px]:max-w-[240px] max-[900px]:mx-auto"
+            style={fadeIn(220)}
           >
-            View CV
-          </a>
-          <a
-            href="https://linkedin.com/in/deng-jing"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 px-5 py-2.5 text-[14px] font-medium text-ink3 hover:text-ink transition-colors duration-200"
-          >
-            LinkedIn
-            <span className="text-ink5">↗</span>
-          </a>
-        </motion.div>
+            <HeroPhoto />
+          </div>
+        </div>
       </div>
 
-      <motion.div
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
-        animate={{ opacity: showChevron ? 1 : 0 }}
-        transition={{ duration: 0.3 }}
+      {/* Scroll hint */}
+      <div
+        className="absolute bottom-5 left-1/2 -translate-x-1/2 text-ink5 pointer-events-none transition-opacity duration-300"
+        style={{ opacity: showChevron ? 1 : 0 }}
+        aria-hidden="true"
       >
-        <motion.svg
-          className="w-5 h-5 text-ink5"
+        <svg
+          width="20"
+          height="20"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
           strokeWidth={1.5}
-          animate={{ y: [0, 4, 0] }}
-          transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{ animation: 'bob 1.9s ease-in-out infinite' }}
         >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-        </motion.svg>
-      </motion.div>
+          <path d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+        </svg>
+      </div>
     </section>
+  )
+}
+
+function HeroPhoto() {
+  const [rotated, setRotated] = useState(false)
+
+  return (
+    <div
+      className="w-full overflow-hidden rounded-[20px] transition-transform duration-300 ease-out"
+      style={{
+        aspectRatio: '4/5',
+        border: '1px solid #e5e5ea',
+        transform: rotated ? 'rotate(0deg)' : 'rotate(1.5deg)',
+      }}
+      onMouseEnter={() => setRotated(true)}
+      onMouseLeave={() => setRotated(false)}
+    >
+      <Image
+        src="/dj-photo.jpg"
+        alt="Deng Jing"
+        width={560}
+        height={700}
+        className="w-full h-full object-cover object-top"
+        priority
+      />
+    </div>
   )
 }

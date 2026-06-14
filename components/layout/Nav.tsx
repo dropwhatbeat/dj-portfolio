@@ -14,12 +14,12 @@ export default function Nav() {
 
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 z-40"
+      className="fixed top-0 left-0 right-0 z-[100]"
       animate={
         scrolled
           ? {
-              backgroundColor: 'rgba(255,255,255,0.8)',
-              backdropFilter: 'blur(20px)',
+              backgroundColor: 'rgba(255,255,255,0.82)',
+              backdropFilter: 'blur(20px) saturate(180%)',
               borderBottomWidth: '0.5px',
               borderBottomColor: '#e5e5ea',
             }
@@ -32,29 +32,31 @@ export default function Nav() {
       }
       transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <div className="max-w-5xl mx-auto px-10 max-md:px-6 h-14 flex items-center justify-between">
-        <Link href="/" className="text-[15px] font-semibold text-ink tracking-tight">
+      <div className="max-w-[1040px] mx-auto px-10 max-md:px-5 h-14 flex items-center justify-between">
+        <Link
+          href="/"
+          className="text-[15px] font-semibold tracking-[-0.2px] text-ink hover:text-accent transition-colors duration-200"
+        >
           Deng Jing
         </Link>
-        <nav className="flex items-center gap-6">
-          <a
-            href="#projects"
-            className="text-[13px] text-ink3 hover:text-ink transition-colors"
-          >
-            Projects
-          </a>
-          <a
-            href="#about"
-            className="text-[13px] text-ink3 hover:text-ink transition-colors"
-          >
-            About
-          </a>
-          <a
-            href="#contact"
-            className="text-[13px] text-ink3 hover:text-ink transition-colors"
-          >
-            Contact
-          </a>
+        <nav aria-label="Main">
+          <ul className="flex items-center gap-7 list-none">
+            <li>
+              <a href="#projects" className="text-[13px] text-ink3 hover:text-ink transition-colors duration-200">
+                Projects
+              </a>
+            </li>
+            <li>
+              <a href="#about" className="text-[13px] text-ink3 hover:text-ink transition-colors duration-200">
+                About
+              </a>
+            </li>
+            <li>
+              <a href="#contact" className="text-[13px] text-ink3 hover:text-ink transition-colors duration-200">
+                Contact
+              </a>
+            </li>
+          </ul>
         </nav>
       </div>
     </motion.header>

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, DM_Serif_Display } from 'next/font/google'
 import './globals.css'
 
 const inter = Inter({
@@ -8,10 +8,18 @@ const inter = Inter({
   display: 'swap',
 })
 
+const dmSerifDisplay = DM_Serif_Display({
+  weight: '400',
+  style: ['normal', 'italic'],
+  subsets: ['latin'],
+  variable: '--font-dm-serif',
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
   title: 'Deng Jing — Product Manager & Builder',
   description:
-    'Technical PM based in Singapore. I build side projects to scratch my own itches — usually things I wished existed but couldn\'t find.',
+    'Technical PM based in Singapore. Building things that should have existed already.',
   openGraph: {
     title: 'Deng Jing — Product Manager & Builder',
     description:
@@ -35,7 +43,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full`}>
+    <html lang="en" className={`${inter.variable} ${dmSerifDisplay.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-white text-ink antialiased">
         {children}
       </body>

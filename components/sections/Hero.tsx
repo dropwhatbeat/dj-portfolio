@@ -54,16 +54,16 @@ export default function Hero() {
                 letterSpacing: '-0.02em',
               }}
             >
-              These are the ideas
+              Side projects that 
               <br />
-              that made it out of my mind.
+              I build for fun
             </h1>
 
             <p
               className="text-[17px] text-ink3 leading-[1.6] mb-9 max-w-[400px]"
               style={fadeIn(300)}
             >
-              Some side projects for fun
+              Some ideas made it out of my mind
             </p>
 
             <div className="flex items-center gap-[6px]" style={fadeIn(430)}>

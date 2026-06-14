@@ -141,7 +141,7 @@ function HeroPhoto() {
         alt="Deng Jing"
         width={560}
         height={700}
-        className="w-full h-full object-cover object-top"
+        className="w-full h-full object-cover object-right"
         priority
       />
     </div>

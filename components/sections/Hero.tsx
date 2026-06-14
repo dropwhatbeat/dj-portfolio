@@ -54,7 +54,7 @@ export default function Hero() {
                 letterSpacing: '-0.02em',
               }}
             >
-              Fun side projects 
+              Fun projects 
               <br />
               that I'm building
             </h1>

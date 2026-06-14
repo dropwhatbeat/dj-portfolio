@@ -68,20 +68,11 @@ export default function Hero() {
 
             <div className="flex items-center gap-[6px]" style={fadeIn(430)}>
               <a
-                href="/cv.pdf"
+                href="https://linkedin.com/in/deng-jing"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-[13px] font-medium text-ink rounded-lg hover:bg-ink hover:text-white hover:border-ink transition-[background-color,color,border-color] duration-[180ms]"
                 style={{ padding: '9px 20px', border: '0.5px solid rgba(29,29,31,0.38)' }}
-              >
-                CV
-              </a>
-              <a
-                href="https://linkedin.com/in/deng-jing"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-[13px] font-medium text-ink3 hover:text-ink transition-colors duration-200"
-                style={{ padding: '9px 12px' }}
               >
                 LinkedIn ↗
               </a>

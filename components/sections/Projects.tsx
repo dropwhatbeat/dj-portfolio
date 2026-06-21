@@ -3,6 +3,7 @@
 import { useRef, useEffect, useState } from 'react'
 import { projects } from '@/lib/projects'
 import type { Project, StatsResponse } from '@/lib/types'
+import ProjectScene, { ProjectLogo } from '@/components/ui/ProjectIllustration'
 
 type ProjectsProps = {
   stats: StatsResponse
@@ -67,7 +68,7 @@ export default function Projects({ stats: _stats }: ProjectsProps) {
         {/* Header */}
         <div className="flex items-baseline justify-between px-10 max-[600px]:px-5 mb-7 flex-shrink-0">
           <p className="text-[11px] font-semibold tracking-[1.6px] uppercase text-ink5">
-            Side Projects
+            Mini Projects
           </p>
           <div className="text-[13px] text-ink4 tabular-nums">
             <span className="text-[13px] font-semibold text-ink2">
@@ -119,7 +120,7 @@ type CardProps = {
 }
 
 function ProjectCardLarge({ project, isActive }: CardProps) {
-  const { name, tagline, description, tags, url, displayUrl, previewBg, emoji } = project
+  const { name, tagline, description, tags, url, displayUrl, previewBg } = project
   const isBullshit = name === 'Bullshit Factory'
 
   function onMouseMove(e: React.MouseEvent<HTMLAnchorElement>) {
@@ -153,19 +154,29 @@ function ProjectCardLarge({ project, isActive }: CardProps) {
     >
       {/* Preview band */}
       <div
-        className="relative flex flex-col items-center justify-center gap-2.5 flex-shrink-0"
+        className="flex flex-shrink-0 overflow-hidden"
         style={{ height: '46%', background: previewBg ?? '#f5f5f7' }}
       >
+        {/* Left: brand poster */}
         <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse at 50% -10%, rgba(255,255,255,0.5) 0%, transparent 60%)' }}
-        />
-        <span className="relative z-10" style={{ fontSize: '3.6rem', lineHeight: 1 }}>
-          {emoji}
-        </span>
-        <span className="relative z-10 font-display font-normal text-ink opacity-60 text-[1.35rem]">
-          {name}
-        </span>
+          className="flex flex-col items-center justify-center flex-shrink-0"
+          style={{
+            width: '38%',
+            borderRight: '0.5px solid rgba(0,0,0,0.07)',
+            padding: '16px',
+            background: 'radial-gradient(ellipse at 50% 45%, rgba(255,255,255,0.58) 0%, transparent 72%)',
+          }}
+        >
+          <ProjectLogo name={name} />
+        </div>
+        {/* Right: product scene */}
+        <div className="relative flex-1 overflow-hidden">
+          <div
+            className="absolute inset-0 pointer-events-none z-[1]"
+            style={{ background: 'radial-gradient(ellipse at 80% -10%, rgba(255,255,255,0.4) 0%, transparent 55%)' }}
+          />
+          <ProjectScene name={name} />
+        </div>
       </div>
 
       {/* Card body */}

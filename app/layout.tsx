@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter, DM_Serif_Display } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
+import { PostHogProvider } from './providers'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -46,8 +47,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${dmSerifDisplay.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-white text-ink antialiased">
+<<<<<<< Updated upstream
         {children}
         <Analytics />
+=======
+        <PostHogProvider>
+          {children}
+        </PostHogProvider>
+>>>>>>> Stashed changes
       </body>
     </html>
   )

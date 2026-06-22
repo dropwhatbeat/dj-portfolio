@@ -3,10 +3,12 @@
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
 import { useState } from 'react'
 import Link from 'next/link'
+import { usePostHog } from 'posthog-js/react'
 
 export default function Nav() {
   const { scrollY } = useScroll()
   const [scrolled, setScrolled] = useState(false)
+  const ph = usePostHog()
 
   useMotionValueEvent(scrollY, 'change', (y) => {
     setScrolled(y > 80)
@@ -42,17 +44,17 @@ export default function Nav() {
         <nav aria-label="Main">
           <ul className="flex items-center gap-7 list-none">
             <li>
-              <a href="#projects" className="text-[13px] text-ink3 hover:text-ink transition-colors duration-200">
+              <a href="#projects" className="text-[13px] text-ink3 hover:text-ink transition-colors duration-200" onClick={() => ph.capture('nav_clicked', { section: 'projects' })}>
                 Projects
               </a>
             </li>
             <li>
-              <a href="#about" className="text-[13px] text-ink3 hover:text-ink transition-colors duration-200">
+              <a href="#about" className="text-[13px] text-ink3 hover:text-ink transition-colors duration-200" onClick={() => ph.capture('nav_clicked', { section: 'about' })}>
                 About
               </a>
             </li>
             <li>
-              <a href="#contact" className="text-[13px] text-ink3 hover:text-ink transition-colors duration-200">
+              <a href="#contact" className="text-[13px] text-ink3 hover:text-ink transition-colors duration-200" onClick={() => ph.capture('nav_clicked', { section: 'contact' })}>
                 Contact
               </a>
             </li>

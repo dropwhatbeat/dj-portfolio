@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { usePostHog } from 'posthog-js/react'
 import Badge from './Badge'
 import Tag from './Tag'
 import StatsRow from './StatsRow'
@@ -13,6 +14,7 @@ type ProjectCardProps = {
 
 export default function ProjectCard({ project, stats }: ProjectCardProps) {
   const { name, status, tagline, description, tags, url } = project
+  const ph = usePostHog()
 
   const card = (
     <motion.div
@@ -56,7 +58,20 @@ export default function ProjectCard({ project, stats }: ProjectCardProps) {
 
   if (url) {
     return (
-      <a href={url} target="_blank" rel="noopener noreferrer" className="block">
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block"
+        onClick={() =>
+          ph.capture('project_card_clicked', {
+            project_name: name,
+            project_status: status,
+            project_tags: tags,
+            project_url: url,
+          })
+        }
+      >
         {card}
       </a>
     )

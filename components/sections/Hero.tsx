@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react'
 import { useScroll, useMotionValueEvent } from 'framer-motion'
 import Image from 'next/image'
+import { usePostHog } from 'posthog-js/react'
 
 export default function Hero() {
   const { scrollY } = useScroll()
   const [mounted, setMounted] = useState(false)
   const [showChevron, setShowChevron] = useState(true)
+  const ph = usePostHog()
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -73,6 +75,7 @@ export default function Hero() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-[13px] font-medium text-ink rounded-lg hover:bg-ink hover:text-white hover:border-ink transition-[background-color,color,border-color] duration-[180ms]"
                 style={{ padding: '9px 20px', border: '0.5px solid rgba(29,29,31,0.38)' }}
+                onClick={() => ph.capture('cta_clicked', { label: 'LinkedIn', location: 'hero' })}
               >
                 LinkedIn ↗
               </a>
@@ -115,6 +118,7 @@ export default function Hero() {
 
 function HeroPhoto() {
   const [rotated, setRotated] = useState(false)
+  const ph = usePostHog()
 
   return (
     <div
@@ -124,7 +128,10 @@ function HeroPhoto() {
         border: '1px solid #e5e5ea',
         transform: rotated ? 'rotate(0deg)' : 'rotate(1.5deg)',
       }}
-      onMouseEnter={() => setRotated(true)}
+      onMouseEnter={() => {
+        setRotated(true)
+        ph.capture('photo_hovered')
+      }}
       onMouseLeave={() => setRotated(false)}
     >
       <Image

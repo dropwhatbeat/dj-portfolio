@@ -1,6 +1,10 @@
+'use client'
+
+import { usePostHog } from 'posthog-js/react'
 import FadeUp from '@/components/motion/FadeUp'
 
 export default function Contact() {
+  const ph = usePostHog()
   return (
     <section id="contact" className="py-24 border-t border-[0.5px] border-rule">
       <div className="max-w-[1040px] mx-auto px-10 max-[600px]:px-5">
@@ -26,7 +30,7 @@ export default function Contact() {
 
         <FadeUp delay={0.1}>
           <div className="flex gap-12 flex-wrap max-[600px]:flex-col max-[600px]:gap-6">
-            <a href="mailto:dropwhatbeat@gmail.com" className="group flex flex-col gap-[5px]">
+            <a href="mailto:dropwhatbeat@gmail.com" className="group flex flex-col gap-[5px]" onClick={() => ph.capture('contact_clicked', { method: 'email' })}>
               <span className="text-[11px] font-semibold tracking-[1.2px] uppercase text-ink5">
                 Email
               </span>
@@ -41,6 +45,7 @@ export default function Contact() {
               target="_blank"
               rel="noopener noreferrer"
               className="group flex flex-col gap-[5px]"
+              onClick={() => ph.capture('contact_clicked', { method: 'linkedin' })}
             >
               <span className="text-[11px] font-semibold tracking-[1.2px] uppercase text-ink5">
                 LinkedIn

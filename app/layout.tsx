@@ -47,14 +47,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${dmSerifDisplay.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-white text-ink antialiased">
-<<<<<<< Updated upstream
-        {children}
-        <Analytics />
-=======
         <PostHogProvider>
           {children}
         </PostHogProvider>
->>>>>>> Stashed changes
+        <Analytics />
       </body>
     </html>
   )

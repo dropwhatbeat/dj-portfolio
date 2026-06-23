@@ -5,8 +5,6 @@ export default function Footer() {
         <p className="text-[13px] text-ink5">
           Deng Jing{' '}
           <span style={{ color: '#c2664e', opacity: 0.55 }}>·</span>
-          {' '}dengjing.io{' '}
-          <span style={{ color: '#c2664e', opacity: 0.55 }}>·</span>
           {' '}2026
         </p>
       </div>

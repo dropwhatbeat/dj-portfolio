@@ -26,7 +26,6 @@ export const metadata: Metadata = {
     title: 'Deng Jing — Product Manager & Builder',
     description:
       'Technical PM based in Singapore. Building things that should have existed already.',
-    url: 'https://dengjing.io',
     siteName: 'Deng Jing',
     locale: 'en_US',
     type: 'website',
@@ -36,7 +35,7 @@ export const metadata: Metadata = {
     title: 'Deng Jing — Product Manager & Builder',
     description: 'Technical PM based in Singapore. Building things that should have existed already.',
   },
-  metadataBase: new URL('https://dengjing.io'),
+
 }
 
 export default function RootLayout({

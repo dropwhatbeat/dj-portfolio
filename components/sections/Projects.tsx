@@ -29,10 +29,11 @@ export default function Projects({ stats: _stats }: ProjectsProps) {
       const sectionScroll = section!.offsetHeight - window.innerHeight
       if (sectionScroll <= 0) return
       const progress = Math.max(0, Math.min(1, -rect.top / sectionScroll))
-      const cards = track!.querySelectorAll<HTMLElement>('.proj-card')
-      const firstCard = cards[0]
-      const cardW = firstCard ? firstCard.offsetWidth + 24 : 544
-      track!.style.transform = `translateX(${-progress * cardW * (N - 1)}px)`
+      // Only shift by however much the track actually overflows its container.
+      // On wide viewports where all cards already fit, this is 0, so cards
+      // stay in view instead of being pushed off-screen to the left.
+      const maxShift = Math.max(0, track!.scrollWidth - track!.clientWidth)
+      track!.style.transform = `translateX(${-progress * maxShift}px)`
       const idx = Math.min(N - 1, Math.round(progress * (N - 1)))
       setActiveIdx(idx)
     }

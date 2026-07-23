@@ -43,36 +43,3 @@ body {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(6px); }
 }
-
-/* Projects: mobile override */
-@media (max-width: 900px) {
-  .projects-section {
-    height: auto !important;
-  }
-  .projects-sticky {
-    position: relative !important;
-    top: auto !important;
-    height: auto !important;
-    min-height: 0;
-    padding-bottom: 28px;
-  }
-  .projects-track-overflow {
-    overflow-x: auto !important;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 12px;
-  }
-  .projects-track {
-    transform: none !important;
-  }
-  .proj-card {
-    min-width: min(520px, 85vw) !important;
-    width: min(520px, 85vw) !important;
-    height: 480px !important;
-    opacity: 1 !important;
-    transform: scale(1) !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.07) !important;
-    scroll-snap-align: start;
-  }
-}

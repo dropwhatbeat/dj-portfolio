@@ -1,113 +1,43 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { projects } from '@/lib/projects'
 import type { Project, StatsResponse } from '@/lib/types'
 import ProjectScene, { ProjectLogo } from '@/components/ui/ProjectIllustration'
+
+// The preview illustrations are authored at this fixed pixel size; the whole
+// canvas is uniformly scaled to fit whatever width the card actually renders at,
+// so it shrinks proportionally on narrow cards instead of clipping/overflowing.
+const PREVIEW_W = 520
+const PREVIEW_H = 230
 
 type ProjectsProps = {
   stats: StatsResponse
 }
 
 export default function Projects({ stats: _stats }: ProjectsProps) {
-  const sectionRef = useRef<HTMLElement>(null)
-  const trackRef = useRef<HTMLDivElement>(null)
-  const [activeIdx, setActiveIdx] = useState(0)
-  const N = projects.length
-
-  useEffect(() => {
-    const section = sectionRef.current
-    const track = trackRef.current
-    if (!section || !track) return
-
-    function update() {
-      if (window.innerWidth <= 900) {
-        track!.style.transform = ''
-        return
-      }
-      const rect = section!.getBoundingClientRect()
-      const sectionScroll = section!.offsetHeight - window.innerHeight
-      if (sectionScroll <= 0) return
-      const progress = Math.max(0, Math.min(1, -rect.top / sectionScroll))
-      // Only shift by however much the track actually overflows its container.
-      // On wide viewports where all cards already fit, this is 0, so cards
-      // stay in view instead of being pushed off-screen to the left.
-      const maxShift = Math.max(0, track!.scrollWidth - track!.clientWidth)
-      track!.style.transform = `translateX(${-progress * maxShift}px)`
-      const idx = Math.min(N - 1, Math.round(progress * (N - 1)))
-      setActiveIdx(idx)
-    }
-
-    window.addEventListener('scroll', update, { passive: true })
-    window.addEventListener('resize', update)
-    update()
-    return () => {
-      window.removeEventListener('scroll', update)
-      window.removeEventListener('resize', update)
-    }
-  }, [N])
-
-  function scrollToCard(i: number) {
-    const section = sectionRef.current
-    if (!section) return
-    const top = section.getBoundingClientRect().top + window.scrollY
-    const range = section.offsetHeight - window.innerHeight
-    window.scrollTo({ top: top + (i / (N - 1)) * range, behavior: 'smooth' })
-  }
-
   return (
     <section
-      ref={sectionRef}
       id="projects"
       className="projects-section border-t border-[0.5px] border-rule"
-      style={{ height: 'calc(100vh + 1100px)', padding: 0 }}
+      style={{ padding: '48px 0 72px' }}
     >
-      <div
-        className="projects-sticky sticky bg-white flex flex-col"
-        style={{ top: '56px', height: 'calc(100vh - 56px)', padding: '44px 0 28px' }}
-      >
-        {/* Header */}
-        <div className="flex items-baseline justify-between px-10 max-[600px]:px-5 mb-7 flex-shrink-0">
-          <p className="text-[11px] font-semibold tracking-[1.6px] uppercase text-ink5">
-            Mini Projects
-          </p>
-          <div className="text-[13px] text-ink4 tabular-nums">
-            <span className="text-[13px] font-semibold text-ink2">
-              {String(activeIdx + 1).padStart(2, '0')}
-            </span>
-            <span> / 0{N}</span>
-          </div>
+      {/* Header */}
+      <div className="flex items-baseline justify-between px-10 max-[600px]:px-5 mb-8">
+        <p className="text-[11px] font-semibold tracking-[1.6px] uppercase text-ink5">
+          Mini Projects
+        </p>
+        <div className="text-[13px] text-ink4 tabular-nums">
+          <span className="text-[13px] font-semibold text-ink2">0{projects.length}</span>
+          <span> projects</span>
         </div>
+      </div>
 
-        {/* Track */}
-        <div className="projects-track-overflow flex-1 px-10 max-[600px]:px-5 min-h-0 overflow-hidden">
-          <div
-            ref={trackRef}
-            className="projects-track flex gap-6 h-full"
-            style={{ willChange: 'transform' }}
-          >
-            {projects.map((project, i) => (
-              <ProjectCardLarge
-                key={project.name}
-                project={project}
-                isActive={i === activeIdx}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Dots */}
-        <div className="flex items-center justify-center gap-2 pt-4 flex-shrink-0">
-          {projects.map((p, i) => (
-            <button
-              key={i}
-              onClick={() => scrollToCard(i)}
-              className={`rounded-full border-0 p-0 cursor-pointer transition-[background-color,transform] duration-300 ${
-                i === activeIdx ? 'bg-accent scale-[1.4]' : 'bg-rule'
-              }`}
-              style={{ width: '6px', height: '6px' }}
-              aria-label={`Go to ${p.name}`}
-            />
+      {/* Grid */}
+      <div className="px-10 max-[600px]:px-5">
+        <div className="grid gap-6 grid-cols-1 min-[700px]:grid-cols-2 min-[1000px]:grid-cols-3 items-stretch">
+          {projects.map((project) => (
+            <ProjectCardLarge key={project.name} project={project} />
           ))}
         </div>
       </div>
@@ -117,72 +47,91 @@ export default function Projects({ stats: _stats }: ProjectsProps) {
 
 type CardProps = {
   project: Project
-  isActive: boolean
 }
 
-function ProjectCardLarge({ project, isActive }: CardProps) {
+function ProjectCardLarge({ project }: CardProps) {
   const { name, tagline, description, tags, url, displayUrl, previewBg } = project
   const isBullshit = name === 'Bullshit Factory'
+
+  const cardRef = useRef<HTMLAnchorElement>(null)
+  const [scale, setScale] = useState(1)
+
+  useEffect(() => {
+    const el = cardRef.current
+    if (!el) return
+    const ro = new ResizeObserver(() => {
+      setScale(el.clientWidth / PREVIEW_W)
+    })
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
 
   function onMouseMove(e: React.MouseEvent<HTMLAnchorElement>) {
     const rect = e.currentTarget.getBoundingClientRect()
     const x = ((e.clientX - rect.left) / rect.width - 0.5) * 10
     const y = ((e.clientY - rect.top) / rect.height - 0.5) * -10
-    e.currentTarget.style.transition = 'opacity 0.55s ease, box-shadow 0.12s ease'
-    e.currentTarget.style.transform = `scale(1) perspective(800px) rotateX(${y}deg) rotateY(${x}deg) translateY(-4px)`
+    e.currentTarget.style.transition = 'box-shadow 0.12s ease'
+    e.currentTarget.style.transform = `perspective(800px) rotateX(${y}deg) rotateY(${x}deg) translateY(-4px)`
     e.currentTarget.style.boxShadow = '0 24px 52px rgba(0,0,0,0.12)'
   }
 
   function onMouseLeave(e: React.MouseEvent<HTMLAnchorElement>) {
-    e.currentTarget.style.transition = 'opacity 0.55s ease, transform 0.55s ease, box-shadow 0.55s ease'
+    e.currentTarget.style.transition = 'transform 0.55s ease, box-shadow 0.55s ease'
     e.currentTarget.style.transform = ''
     e.currentTarget.style.boxShadow = ''
   }
 
   return (
     <a
+      ref={cardRef}
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className={`proj-card group flex flex-col flex-shrink-0 overflow-hidden rounded-2xl bg-white cursor-pointer transition-[opacity,transform,box-shadow] duration-[550ms] ease-[ease] ${
-        isActive
-          ? 'opacity-100 scale-100 shadow-[0_16px_48px_rgba(0,0,0,0.09)]'
-          : 'opacity-45 scale-[0.955]'
-      }`}
-      style={{ width: '520px', minWidth: '520px', height: '100%', border: '0.5px solid #e5e5ea' }}
+      className="proj-card group flex flex-col overflow-hidden rounded-2xl bg-white cursor-pointer shadow-[0_10px_32px_rgba(0,0,0,0.07)] transition-[transform,box-shadow] duration-[550ms] ease-[ease]"
+      style={{ border: '0.5px solid #e5e5ea' }}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
     >
-      {/* Preview band */}
+      {/* Preview band — fixed-size canvas scaled to fit the card width */}
       <div
-        className="flex flex-shrink-0 overflow-hidden"
-        style={{ height: '46%', background: previewBg ?? '#f5f5f7' }}
+        className="flex-shrink-0 overflow-hidden"
+        style={{ height: PREVIEW_H * scale, background: previewBg ?? '#f5f5f7' }}
       >
-        {/* Left: brand poster */}
         <div
-          className="flex flex-col items-center justify-center flex-shrink-0"
+          className="flex"
           style={{
-            width: '38%',
-            borderRight: '0.5px solid rgba(0,0,0,0.07)',
-            padding: '16px',
-            background: 'radial-gradient(ellipse at 50% 45%, rgba(255,255,255,0.58) 0%, transparent 72%)',
+            width: PREVIEW_W,
+            height: PREVIEW_H,
+            transform: `scale(${scale})`,
+            transformOrigin: 'top left',
           }}
         >
-          <ProjectLogo name={name} />
-        </div>
-        {/* Right: product scene */}
-        <div className="relative flex-1 overflow-hidden">
+          {/* Left: brand poster */}
           <div
-            className="absolute inset-0 pointer-events-none z-[1]"
-            style={{ background: 'radial-gradient(ellipse at 80% -10%, rgba(255,255,255,0.4) 0%, transparent 55%)' }}
-          />
-          <ProjectScene name={name} />
+            className="flex flex-col items-center justify-center flex-shrink-0"
+            style={{
+              width: '38%',
+              borderRight: '0.5px solid rgba(0,0,0,0.07)',
+              padding: '16px',
+              background: 'radial-gradient(ellipse at 50% 45%, rgba(255,255,255,0.58) 0%, transparent 72%)',
+            }}
+          >
+            <ProjectLogo name={name} />
+          </div>
+          {/* Right: product scene */}
+          <div className="relative flex-1 overflow-hidden">
+            <div
+              className="absolute inset-0 pointer-events-none z-[1]"
+              style={{ background: 'radial-gradient(ellipse at 80% -10%, rgba(255,255,255,0.4) 0%, transparent 55%)' }}
+            />
+            <ProjectScene name={name} />
+          </div>
         </div>
       </div>
 
       {/* Card body */}
       <div
-        className={`flex-1 flex flex-col overflow-hidden min-h-0 ${isBullshit ? 'group-hover:bg-[#FFF9EC]' : ''} transition-colors duration-300`}
+        className={`flex-1 flex flex-col ${isBullshit ? 'group-hover:bg-[#FFF9EC]' : ''} transition-colors duration-300`}
         style={{ padding: '22px 26px 20px', gap: '8px' }}
       >
         <div className="flex items-center flex-wrap" style={{ gap: '7px', marginBottom: '3px' }}>

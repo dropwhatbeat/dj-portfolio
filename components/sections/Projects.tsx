@@ -23,7 +23,7 @@ export default function Projects({ stats: _stats }: ProjectsProps) {
       style={{ padding: '48px 0 72px' }}
     >
       {/* Header */}
-      <div className="flex items-baseline justify-between px-10 max-[600px]:px-5 mb-8">
+      <div className="max-w-[2000px] mx-auto flex items-baseline justify-between px-12 max-[600px]:px-5 min-[1440px]:px-16 min-[1760px]:px-20 mb-8">
         <p className="text-[11px] font-semibold tracking-[1.6px] uppercase text-ink5">
           Mini Projects
         </p>
@@ -33,8 +33,8 @@ export default function Projects({ stats: _stats }: ProjectsProps) {
         </div>
       </div>
 
-      {/* Grid */}
-      <div className="px-10 max-[600px]:px-5">
+      {/* Gallery: 3 cards side by side */}
+      <div className="max-w-[2000px] mx-auto px-12 max-[600px]:px-5 min-[1440px]:px-16 min-[1760px]:px-20">
         <div className="grid gap-6 grid-cols-1 min-[700px]:grid-cols-2 min-[1000px]:grid-cols-3 items-stretch">
           {projects.map((project) => (
             <ProjectCardLarge key={project.name} project={project} />
@@ -53,11 +53,11 @@ function ProjectCardLarge({ project }: CardProps) {
   const { name, tagline, description, tags, url, displayUrl, previewBg } = project
   const isBullshit = name === 'Bullshit Factory'
 
-  const cardRef = useRef<HTMLAnchorElement>(null)
+  const previewRef = useRef<HTMLDivElement>(null)
   const [scale, setScale] = useState(1)
 
   useEffect(() => {
-    const el = cardRef.current
+    const el = previewRef.current
     if (!el) return
     const ro = new ResizeObserver(() => {
       setScale(el.clientWidth / PREVIEW_W)
@@ -83,7 +83,6 @@ function ProjectCardLarge({ project }: CardProps) {
 
   return (
     <a
-      ref={cardRef}
       href={url}
       target="_blank"
       rel="noopener noreferrer"
@@ -94,6 +93,7 @@ function ProjectCardLarge({ project }: CardProps) {
     >
       {/* Preview band — fixed-size canvas scaled to fit the card width */}
       <div
+        ref={previewRef}
         className="flex-shrink-0 overflow-hidden"
         style={{ height: PREVIEW_H * scale, background: previewBg ?? '#f5f5f7' }}
       >
